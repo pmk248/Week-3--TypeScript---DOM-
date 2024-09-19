@@ -10,38 +10,39 @@
 <body> 
     <h1 id="header">My Fantasy Team</h1>
     <div class="fantasy-team-container" id="fantasy-team-container">
-        <div id="point-guard" class="fantasy-card">
+        <div id="pg-card" class="fantasy-card"> 
             <h3>Point Guard</h3>
         </div>
-        <div id="shooting-guard" class="fantasy-card">
+        
+        <div id="sg-card" class="fantasy-card">
             <h3>Shooting Guard</h3>
         </div>
-        <div id="small-forward" class="fantasy-card">
+        <div id="sf-card" class="fantasy-card">
             <h3>Small Forward</h3>
         </div>
-        <div id="power-forward" class="fantasy-card">
+        <div id="pf-card" class="fantasy-card">
             <h3>Power Forward</h3>
         </div>
-        <div id="center" class="fantasy-card">
+        <div id="c-card" class="fantasy-card">
             <h3>Center</h3>
         </div>
     </div>
     <div id="search-filter" class="search-filter">
         <form id="filter-form">
             <select name="position">
-                <option name="point-gaurd" value="0">Point Guard</option>
-                <option name="shooting-gaurd" value="1">Shooting Guard</option>
-                <option name="small-forward" value="2">Small Forward</option>
-                <option name="power-forward" value="3">Power Forward</option>
-                <option name="center" value="4">Center</option>
+                <option name="point-guard" value="PG">Point Guard</option>
+                <option name="shooting-guard" value="SG">Shooting Guard</option>
+                <option name="small-forward" value="SF">Small Forward</option>
+                <option name="power-forward" value="PF">Power Forward</option>
+                <option name="center" value="C">Center</option>
             </select>
-            <p>Points: <output id="total-value"></output>
-            <input type="range" min="1" max="20000" step="1" id="total-range"/></p>
-            <p>2P%: <output id="two-value"></output>
-            <input type="range" min="1" max="100" step="1" id="two-range"/></p>
-            <p>3P%: <output id="three-value"></output>
-            <input type="range" min="1" max="100" step="1" id="three-range"/></p>
-            <input type="submit" value="Search">
+            <p><label for="a" id="total-value">Total Points: 1</label>
+                <input type="range" min="1" max="20000" step="1" id="total-range" value="10000" name="a"/></p>
+                <p><label for="2" id="two-value">Two Point Average: 0%</label>
+                <input type="range" min="1" max="100" step="1" id="two-range" value="50" name="b"/></p>
+                <p><label for="c" id="three-value">Three Point Average: 0%</label>
+                <input type="range" min="1" max="100" step="1" id="three-range" value="50" name="c"/></p>
+                <input type="submit" value="Search">
         </form>
     </div>
     <div id="results-table">

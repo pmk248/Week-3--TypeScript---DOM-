@@ -12,11 +12,11 @@ function initializeLocalStorage() {
     const existingTeam = localStorage.getItem('fantasyTeam');
     if (!existingTeam) {
         const fantasyTeam = {
-            PG: null,
-            SG: null,
-            SF: null,
-            PF: null,
-            C: null
+            "PG": null,
+            "SG": null,
+            "SF": null,
+            "PF": null,
+            "C": null
         };
         localStorage.setItem('fantasyTeam', JSON.stringify(fantasyTeam));
     }
@@ -26,6 +26,16 @@ function addToTeam(player) {
     team[player.position] = player;
     localStorage.setItem('fantasyTeam', JSON.stringify(team));
     console.log(`Player ${player.name} added to position ${player.position}`);
+    const card = document.querySelector(`#${player.position.toLowerCase()}-card`);
+    if (card) {
+        card.innerHTML = `
+            <h3>${player.position}</h3>
+            <p>${player.name}</p>
+            <p>Total Points: ${player.totalPoints}</p>
+            <p>Average (Two Pointer): ${player.twoPointer}</p>
+            <p>Average (Three Pointer): ${player.threePointer}</p>
+            `;
+    }
 }
 class PlayerRow {
     constructor(element, playerData) {
@@ -68,9 +78,9 @@ function returnFiltered(filter) {
             if (!response.ok) {
                 throw new Error("Network Issue!");
             }
-            let fillteredList = yield response.json();
+            let filteredList = yield response.json();
             const responseList = [];
-            fillteredList.forEach((player) => {
+            filteredList.forEach((player) => {
                 let newPlayer = {
                     name: player.playerName,
                     position: player.position,
@@ -80,7 +90,6 @@ function returnFiltered(filter) {
                 };
                 responseList.push(newPlayer);
             });
-            console.log(responseList);
             renderRows(responseList);
         }
         catch (error) {
@@ -90,46 +99,49 @@ function returnFiltered(filter) {
 }
 ;
 function renderRows(arr) {
-    const tBody = document.getElementsByTagName('tbody')[0];
-    arr.forEach(player => {
-        const rowElement = document.createElement('tr');
-        new PlayerRow(rowElement, player);
-        tBody.appendChild(rowElement);
-    });
+    const tBody = document.querySelector('tbody');
+    if (tBody) {
+        arr.forEach(player => {
+            const rowElement = document.createElement('tr');
+            new PlayerRow(rowElement, player);
+            tBody.appendChild(rowElement);
+        });
+    }
 }
-document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, void 0, function* () {
+document.addEventListener('DOMContentLoaded', () => {
+    initializeLocalStorage();
     const filterForm = document.getElementById('filter-form');
     const sliderTotal = document.getElementById("total-range");
     const outputTotal = document.getElementById("total-value");
     const sliderTwo = document.getElementById("two-range");
     const outputTwo = document.getElementById("two-value");
     const sliderThree = document.getElementById("three-range");
-    const outputThree = document.getElementById("two-value");
-    initializeLocalStorage();
-    sliderTotal.addEventListener('oninput', () => {
-        outputTotal.innerText = sliderTotal.value;
+    const outputThree = document.getElementById("three-value");
+    console.log(localStorage);
+    sliderTotal.addEventListener('input', () => {
+        outputTotal.innerText = "";
+        outputTotal.innerText = `Total Points: ${sliderTotal.value}`;
     });
-    sliderTwo.addEventListener('oninput', () => {
-        outputTwo.innerText = sliderTwo.value;
+    sliderTwo.addEventListener('input', () => {
+        outputTwo.innerText = `Two Point Average: ${sliderTwo.value}%`;
     });
-    sliderThree.addEventListener('oninput', () => {
-        outputThree.innerText = sliderThree.value;
+    sliderThree.addEventListener('input', () => {
+        outputThree.innerText = `Three Point Average: ${sliderThree.value}%`;
     });
-    filterForm === null || filterForm === void 0 ? void 0 : filterForm.addEventListener('submit', (event) => {
-        event === null || event === void 0 ? void 0 : event.preventDefault();
-        if (filterForm) {
-            let formData = new FormData(filterForm);
-            const newRequest = {
-                position: formData.get('position'),
-                twoPercent: Number(sliderTwo.value),
-                threePercent: Number(sliderThree.value),
-                points: Number(sliderTotal.value)
-            };
-            console.log(newRequest);
-            returnFiltered(newRequest);
-        }
-    });
-}));
+    filterForm === null || filterForm === void 0 ? void 0 : filterForm.addEventListener('submit', (event) => __awaiter(void 0, void 0, void 0, function* () {
+        event.preventDefault();
+        let formData = new FormData(filterForm);
+        const newRequest = {
+            position: formData.get('position'),
+            twoPercent: Number(sliderTwo.value),
+            threePercent: Number(sliderThree.value),
+            points: Number(sliderTotal.value)
+        };
+        console.log(newRequest);
+        yield returnFiltered(newRequest);
+        renderRows();
+    }));
+});
 // let blah: userRequest = {position: "PG", twoPercent: 30, threePercent: 30, points: 10000};
 // console.log(typeof blah);
 // returnFiltered(blah).then(result => console.log(result)).catch(error => console.error(error));

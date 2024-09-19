@@ -1,21 +1,13 @@
-interface Player {
-    name: string,
-    position: string,
-    totalPoints: number,
-    twoPointer: number,
-    threePointer: number
-}
-
 function initializeLocalStorage(): void {
     const existingTeam = localStorage.getItem('fantasyTeam');
     
     if (!existingTeam) {
         const fantasyTeam = {
-            PG: null,
-            SG: null,
-            SF: null,
-            PF: null,
-            C: null
+            "PG": null,
+            "SG": null,
+            "SF": null,
+            "PF": null,
+            "C": null
         };
         localStorage.setItem('fantasyTeam', JSON.stringify(fantasyTeam));
     }
@@ -23,10 +15,24 @@ function initializeLocalStorage(): void {
 
 function addToTeam(player: Player): void {
     let team = JSON.parse(localStorage.getItem('fantasyTeam') || '{}');
+    
     team[player.position] = player;
     localStorage.setItem('fantasyTeam', JSON.stringify(team));
+
     console.log(`Player ${player.name} added to position ${player.position}`);
+    
+    const card = document.querySelector(`#${player.position.toLowerCase()}-card`);
+    if (card) {
+        card.innerHTML = `
+            <h3>${player.position}</h3>
+            <p>${player.name}</p>
+            <p>Total Points: ${player.totalPoints}</p>
+            <p>Average (Two Pointer): ${player.twoPointer}</p>
+            <p>Average (Three Pointer): ${player.threePointer}</p>
+            `;
+    }
 }
+
 
 class PlayerRow {
     element: HTMLElement;
@@ -90,9 +96,9 @@ async function returnFiltered(filter: userRequest): Promise<void | Player[]> {
         if (!response.ok) {
             throw new Error("Network Issue!");
         }
-        let fillteredList = await response.json();
+        let filteredList = await response.json();
         const responseList: Array<Player> = [];
-        fillteredList.forEach((player: { 
+        filteredList.forEach((player: { 
             playerName: string; position: string; points: number; twoPercent: number; threePercent: number; 
             }) => {
             let newPlayer: Player = {
@@ -104,7 +110,6 @@ async function returnFiltered(filter: userRequest): Promise<void | Player[]> {
             }
             responseList.push(newPlayer);
         });
-        console.log(responseList);
         renderRows(responseList);
     } catch (error) {
         throw error;
@@ -112,51 +117,50 @@ async function returnFiltered(filter: userRequest): Promise<void | Player[]> {
 };
 
 function renderRows(arr: Array<Player>): void {
-    const tBody = document.getElementsByTagName('tbody')[0]; 
-
-    arr.forEach(player => {
-        const rowElement = document.createElement('tr') as HTMLTableRowElement;
-        new PlayerRow(rowElement, player);
-        tBody.appendChild(rowElement);
-    });
+    const tBody = document.querySelector('tbody'); 
+    if (tBody){
+        arr.forEach(player => {
+            const rowElement = document.createElement('tr') as HTMLTableRowElement;
+            new PlayerRow(rowElement, player);
+            tBody.appendChild(rowElement);
+        });
+    }
 }
 
-
-
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+    initializeLocalStorage();
     const filterForm = document.getElementById('filter-form') as HTMLFormElement;
     const sliderTotal = document.getElementById("total-range") as HTMLInputElement;
-    const outputTotal = document.getElementById("total-value");
+    const outputTotal = document.getElementById("total-value") as HTMLLabelElement;
     const sliderTwo = document.getElementById("two-range") as HTMLInputElement;
-    const outputTwo = document.getElementById("two-value");
+    const outputTwo = document.getElementById("two-value") as HTMLLabelElement;
     const sliderThree = document.getElementById("three-range") as HTMLInputElement;
-    const outputThree = document.getElementById("two-value");
-    initializeLocalStorage();
-    sliderTotal.addEventListener('oninput', () => {
-        outputTotal!.innerText = sliderTotal.value;
+    const outputThree = document.getElementById("three-value") as HTMLLabelElement;
+    console.log(localStorage);
+    sliderTotal.addEventListener('input', () => {
+        outputTotal.innerText = "";
+        outputTotal.innerText = `Total Points: ${sliderTotal.value}`;
     });
-    sliderTwo.addEventListener('oninput', () => {
-        outputTwo!.innerText = sliderTwo.value;
+    sliderTwo.addEventListener('input', () => {
+        outputTwo.innerText = `Two Point Average: ${sliderTwo.value}%`;
     });
-    sliderThree.addEventListener('oninput', () => {
-        outputThree!.innerText = sliderThree.value
+    sliderThree.addEventListener('input', () => {
+        outputThree.innerText = `Three Point Average: ${sliderThree.value}%`;
     });
 
-    filterForm?.addEventListener('submit', (event) => {
-        event?.preventDefault();
-
-        if (filterForm) {
-            let formData = new FormData(filterForm);
-            const newRequest: userRequest = {
-                position: formData.get('position') as string,
-                twoPercent: Number(sliderTwo!.value),
-                threePercent: Number(sliderThree!.value),
-                points: Number(sliderTotal!.value)
-            };
-            console.log(newRequest);
-            returnFiltered(newRequest);
-        }
-    })
+    filterForm?.addEventListener('submit', async (event: Event) => {
+        event.preventDefault();
+        let formData = new FormData(filterForm);
+        const newRequest: userRequest = {
+            position: formData.get('position') as string,
+            twoPercent: Number(sliderTwo.value),
+            threePercent: Number(sliderThree.value),
+            points: Number(sliderTotal.value)
+        };
+        console.log(newRequest);
+        await returnFiltered(newRequest);
+        renderRows();
+    });
 });
 
 
