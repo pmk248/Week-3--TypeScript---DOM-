@@ -9,53 +9,58 @@
 </head>
 <body> 
     <h1 id="header">My Fantasy Team</h1>
-    <div id="point-guard">
-        
+    <div class="fantasy-team-container" id="fantasy-team-container">
+        <div id="point-guard" class="fantasy-card">
+            <h3>Point Guard</h3>
+        </div>
+        <div id="shooting-guard" class="fantasy-card">
+            <h3>Shooting Guard</h3>
+        </div>
+        <div id="small-forward" class="fantasy-card">
+            <h3>Small Forward</h3>
+        </div>
+        <div id="power-forward" class="fantasy-card">
+            <h3>Power Forward</h3>
+        </div>
+        <div id="center" class="fantasy-card">
+            <h3>Center</h3>
+        </div>
     </div>
-    <div id="shooting-guard"></div>
-        
-    </div>
-    <div id="small-forward"></div>
-        
-    </div>
-    <div id="power-forward"></div>
-        
-    </div>
-    <div id="center"></div>
-        
-    </div>
-    <div id="search-filter">
+    <div id="search-filter" class="search-filter">
         <form id="filter-form">
             <select name="position">
-                <option name="point-gaurd" value="0">Point Gaurd</option>
-                <option name="shooting-gaurd" value="1">Shooting Gaurd</option>
+                <option name="point-gaurd" value="0">Point Guard</option>
+                <option name="shooting-gaurd" value="1">Shooting Guard</option>
                 <option name="small-forward" value="2">Small Forward</option>
-                <option name="power-forward" value="3">Point Gaurd</option>
+                <option name="power-forward" value="3">Power Forward</option>
                 <option name="center" value="4">Center</option>
             </select>
-            <p>Points: <output id="value"></output>
-            <input type="range" min="1" max="20000" step="1" /></p>
-            <p>2P%: <output id="value"></output>
-            <input type="range" min="1" max="100" step="1" /></p>
-            <p>3P%: <output id="value"></output>
-            <input type="range" min="1" max="100" step="1" /></p>
+            <p>Points: <output id="total-value"></output>
+            <input type="range" min="1" max="20000" step="1" id="total-range"/></p>
+            <p>2P%: <output id="two-value"></output>
+            <input type="range" min="1" max="100" step="1" id="two-range"/></p>
+            <p>3P%: <output id="three-value"></output>
+            <input type="range" min="1" max="100" step="1" id="three-range"/></p>
+            <input type="submit" value="Search">
         </form>
     </div>
     <div id="results-table">
-        <table>
-            <thead>
+    <table id="results-table" class="results-table">
+        <thead>
+            <tr>
                 <tr>
-                    <th>
-                        <th>Player Name</th>
-                        <th>  Position  </th>
-                        <th>Total Points</th>
-                        <th>2 Pointer %</th>
-                        <th>3 Pointer %</th>
-                        <th>  Actions  </th>
-                    </th>
+                    <th>Player Name</th>
+                    <th>Position</th>
+                    <th>Total Points</th>
+                    <th>Two Pointer</th>
+                    <th>Three Pointer</th>
+                    <th>Actions</th>
                 </tr>
-            </thead>
-        </table>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
     </div>
 </body>
 </html>
