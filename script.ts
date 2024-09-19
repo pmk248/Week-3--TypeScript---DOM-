@@ -61,7 +61,7 @@ class PlayerRow {
         
         if (addToTeamButton) {
             addToTeamButton.addEventListener('click', () => {
-                addToTeam(this.playerData); 
+                addToTeam(this.playerData);
             });
         }
     }
