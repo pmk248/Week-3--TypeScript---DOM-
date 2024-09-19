@@ -139,9 +139,5 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         console.log(newRequest);
         yield returnFiltered(newRequest);
-        renderRows();
     }));
 });
-// let blah: userRequest = {position: "PG", twoPercent: 30, threePercent: 30, points: 10000};
-// console.log(typeof blah);
-// returnFiltered(blah).then(result => console.log(result)).catch(error => console.error(error));
